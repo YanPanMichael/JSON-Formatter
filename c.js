@@ -117,17 +117,22 @@ function GetRow(indent, data, isPropertyContent){
   return tabs+data;                       
 }
 
+// Original
+// function CollapsibleViewClicked(){
+//   $id("CollapsibleViewDetail").style.visibility = $id("CollapsibleView").checked ? "visible" : "hidden";
+//   Process();
+// }
+
+// Updated
 function CollapsibleViewClicked(){
   $id("CollapsibleViewDetail").style.visibility = $id("CollapsibleView").checked ? "visible" : "hidden";
+  if(!$("#CollapsibleView").is(":checked") && $("#add_comm").is(":checked")){
+    $("#add_comm").trigger("click");
+  }
   Process();
 }
 
-
-/** Start Updating
- * 
- * 
- */
-
+// Start Updating
 function startFormat() {
     if($('#jsondataurl').val() != ""){
         $('#RawJson').val("");
