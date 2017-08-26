@@ -1,11 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<!-- saved from url=(0037)http://www.bodurov.com/JsonFormatter/ -->
-<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<link rel="canonical" href="./index_files/index.htm">
-  <title>Collapsible JSON Formatter - view your json code in colors</title>
-<meta name="description" content="Collapsible JSON Formatter - view your json code in colors">
-<meta name="keywords" content="Json, Printer, Colorer, Format, Color, Collapsible">
-<script>
 // we need tabs as spaces and not CSS magin-left 
 // in order to ratain format when coping and pasing the code
 window.SINGLE_TAB = "  ";
@@ -130,6 +122,88 @@ function CollapsibleViewClicked(){
   Process();
 }
 
+
+/** Start Updating
+ * 
+ * 
+ */
+
+function startFormat() {
+    if($('#jsondataurl').val() != ""){
+        $('#RawJson').val("");
+        var jsonurl = $("#jsondataurl").val();
+        $.ajax({
+          dataType: "text",
+          type: 'get',
+          url: jsonurl,
+          sccess: function (data) {
+            $("#RawJson").val(data);
+            Process();
+            //alert("dfdf");
+          },
+          error: function () {
+            alert("Please check whether the url you put is legal!");
+          }
+        });
+     } else {
+       Process();
+     }
+}
+
+function addType() {
+  var formatJSON = $('.Canvas').html();
+  if(formatJSON == "" && $("add_type").is(":checked")) {
+    Process();
+    addType();
+  }
+  if(formatJSON != "" && $("add_type").is(":checked")) {
+    $(".Canvas").addClass("on");
+    // Process();
+  }
+  else if(!$("#add_type").is(":checked")) {
+    $('.Canvas').removeClass("on");
+  }
+}
+
+function addComments() {
+  var formatJSON = $('.Canvas').html();
+  // $("#CollapsibleView").trigger("click");
+  !$("#CollapsibleView").is(":checked") && $("#add_comm").is(":checked") && $("#CollapsibleView").trigger("click")
+  if(formatJSON == "" && $("add_comm").is(":checked")) {
+    Process();
+    addComments();
+  }
+  if(formatJSON != "" && $("add_comm").is(":checked")) {
+    if($(".add_com").length == 0) {
+      $(".collapsible span:last-child").append("<img class=\"add_com\" src=\"green.PNG\" width=\"11\" height=\"11\" style=\"margin-left:10px\" />");
+      $(".add_com").click(commentsContent);
+    }
+    else {
+      $(".add_com").show();
+      $(".comm_containner").show();
+    }
+    //Process();
+    //$(".add_com").click(commentsContent);
+  }
+  else if(!$("add_comm").is(":checked")) {
+    $(".add_com").hide();
+    $(".comm_containner").hide();
+  }
+}
+
+function commentsContent() {
+  var prevCont = "";
+  if($(this).siblings(".comm_container").text() != "") {
+    prevCont = $(this).siblings(".comm_container").text();
+  }
+  var commContent = window.prompt('Please input: ', prevCont);
+  if(commContent != null) {
+    $(this).siblings(".comm_container").remove();
+    $(this).parent().append("<span class=\"comm_container\" style=\"margin-left:10px;\">" + commContent + "<\span>");
+  }
+}
+ /** End */
+
 function QuoteKeysClicked(){
   window.QuoteKeys = $id("QuoteKeys").checked;
   Process();
@@ -247,198 +321,3 @@ function LinkToJson(){
   $id("InvisibleLinkUrl").value = val;
   $id("InvisibleLink").submit();
 }
-</script>
-
-<style>
-*{
-	font-family: Georgia;
-}
-.Canvas
-{
-	font: 10pt Georgia;
-	background-color:#ECECEC;
-	color:#000000;
-	border:solid 1px #CECECE;
-}
-.ObjectBrace
-{
-	color:#00AA00;
-	font-weight:bold;
-}
-.ArrayBrace
-{
-	color:#0033FF;
-	font-weight:bold;
-}
-.PropertyName
-{
-	color:#CC0000;
-	font-weight:bold;
-}
-.String
-{
-	color:#007777;
-}
-.Number
-{
-	color:#AA00AA;
-}
-.Boolean
-{
-  color:#0000FF;
-}
-.Function
-{
-  color:#AA6633;
-  text-decoration:italic;
-}
-.Null
-{
-  color:#0000FF;
-}
-.Comma
-{
-  color:#000000;
-  font-weight:bold;
-}
-PRE.CodeContainer{
-  margin-top:0px;
-  margin-bottom:0px;
-}
-PRE.CodeContainer img{
-  cursor:pointer;
-  border:none;
-  margin-bottom:-1px;
-}
-#CollapsibleViewDetail a{
-  padding-left:10px;
-}
-#ControlsRow{
-  white-space:nowrap;
-  font: 11px Georgia;
-}
-#TabSizeHolder{
-  padding-left:10px;
-  padding-right:10px;
-}
-#HeaderTitle{
-  text-align:right;
-  font-size:11px;
-}
-#HeaderSubTitle{
-  margin-bottom:2px;
-  margin-top:0px
-}
-#RawJson{
-  width:99%;
-  height:130px;
-}
-A.OtherToolsLink { color:#555;text-decoration:none; }
-A.OtherToolsLink:hover { text-decoration:underline; }
-</style>
-<link rel="stylesheet" type="text/css" href="chrome-extension://lfjamigppmepikjlacjdpgjaiojdjhoj/css/menu.css"></head>
-<body>
-<div id="HeaderTitle"> Quick Json Formatter <span style="color:#aaa;font-weight:bold;font-style:italic">Online</span> 1.0 Copyright (c) 2008-2009 Vladimir Bodurov &nbsp; <a href="http://blog.bodurov.com/Formatter-and-colorer-of-raw-JSON-code">about this tool</a></div>
-<h3 id="HeaderSubTitle">Collapsible JSON Formatter</h3>
-<div>Enter your JSON here: <span style="color:#777;font-size:10px">(Your code will NOT be posted to a server, the program executes on the client)</span></div>
-
-<textarea id="RawJson"></textarea>
-<div id="ControlsRow">
-  <input type="Button" value="Format" onclick="Process()">
-  <span id="TabSizeHolder">
-    tab size: 
-    <select id="TabSize" onchange="TabSizeChanged()">
-      <option value="1">1</option>
-      <option value="2">2</option>
-      <option value="3" selected="true">3</option>
-      <option value="4">4</option>
-      <option value="5">5</option>
-      <option value="6">6</option>
-    </select>
-  </span>
-  <label for="QuoteKeys">
-    <input type="checkbox" id="QuoteKeys" onclick="QuoteKeysClicked()" checked="true"> 
-    Keys in Quotes
-  </label>&nbsp; 
-  <a href="javascript:void(0);" onclick="SelectAllClicked()">select all</a>
-  &nbsp;
-  <span id="CollapsibleViewHolder">
-      <label for="CollapsibleView">
-        <input type="checkbox" id="CollapsibleView" onclick="CollapsibleViewClicked()" checked="true"> 
-        Collapsible View
-      </label>
-  </span>
-  <span id="CollapsibleViewDetail">
-    <a href="javascript:void(0);" onclick="ExpandAllClicked()">expand all</a>
-    <a href="javascript:void(0);" onclick="CollapseAllClicked()">collapse all</a>
-    <a href="javascript:void(0);" onclick="CollapseLevel(3)">level 2+</a>
-    <a href="javascript:void(0);" onclick="CollapseLevel(4)">level 3+</a>
-    <a href="javascript:void(0);" onclick="CollapseLevel(5)">level 4+</a>
-    <a href="javascript:void(0);" onclick="CollapseLevel(6)">level 5+</a>
-    <a href="javascript:void(0);" onclick="CollapseLevel(7)">level 6+</a>
-    <a href="javascript:void(0);" onclick="CollapseLevel(8)">level 7+</a>
-    <a href="javascript:void(0);" onclick="CollapseLevel(9)">level 8+</a>
-  </span>
-</div>
-<div id="Canvas" class="Canvas"></div>
-
-<form id="InvisibleLink" action="http://www.bodurov.com/JsonFormatter/view.aspx" target="_blank">
-  <input type="hidden" id="InvisibleLinkUrl" name="json" value="">
-</form>
-
-<div style="font-size:10px;color:grey;text-align:right;margin-top:20px">
-  <input type="button" value="link to this json" onclick="LinkToJson()" style="color:#777"> &nbsp; &nbsp;
-  my other tools: &nbsp;
-  <a href="http://www.bodurov.com/NearestStars/" class="OtherToolsLink">
-    Nearest Stars</a> &nbsp; &nbsp;
-  <a href="http://www.bodurov.com/VectorVisualizer/" class="OtherToolsLink">
-    Vector Visualizer</a> &nbsp; &nbsp;
-  <a href="http://www.bodurov.com/TextDiff/" class="OtherToolsLink">
-    Text Difference</a>
-</div>
-
-<script src="./urchin.js" type="text/javascript">
-</script>
-<script type="text/javascript">
-	_uacct = "UA-2223138-1";
-	urchinTracker();
-		
-function onLoad() {
-    var version = getSilverlightVersion();
-    if (version) { __utmSetVar(version); }
-}
-
-function getSilverlightVersion() {
-    var version = 'No Silverlight';
-    var container = null;
-    try {
-        var control = null;
-        if (window.ActiveXObject) {
-            control = new ActiveXObject('AgControl.AgControl');
-        }
-        else {
-            if (navigator.plugins['Silverlight Plug-In']) {
-                container = document.createElement('div');
-                document.body.appendChild(container);
-                container.innerHTML= '<embed type="application/x-silverlight" src="data:," />';
-                control = container.childNodes[0];
-            }
-        }
-        if (control) {
-            if (control.isVersionSupported('5.0')) { version = 'Silverlight/5.0'; }
-            else if (control.isVersionSupported('4.0')) { version = 'Silverlight/4.0'; }
-            else if (control.isVersionSupported('3.0')) { version = 'Silverlight/3.0'; }
-            else if (control.isVersionSupported('2.0')) { version = 'Silverlight/2.0'; }
-            else if (control.isVersionSupported('1.0')) { version = 'Silverlight/1.0'; }
-        }
-    }
-    catch (e) { }
-    if (container) {
-        document.body.removeChild(container);
-    }
-    return version;
-}
-onLoad();
-</script>
-
-</body></html>
