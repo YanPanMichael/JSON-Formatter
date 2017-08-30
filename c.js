@@ -180,7 +180,7 @@ function addComments() {
   }
   if(formatJSON != "" && $("add_comm").is(":checked")) {
     if($(".add_com").length == 0) {
-      $(".collapsible span:last-child").append("<img class=\"add_com\" src=\"green.PNG\" width=\"11\" height=\"11\" style=\"margin-left:10px\" />");
+      $(".collapsible span:last-child").append("<img class=\"add_com\" src=\"\.\\images\\green.PNG\" width=\"11\" height=\"11\" style=\"margin-left:10px\" />");
       $(".add_com").click(commentsContent);
     }
     else {
